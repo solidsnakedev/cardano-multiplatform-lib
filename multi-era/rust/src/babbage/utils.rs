@@ -4,6 +4,7 @@ use cbor_event::{de::Deserializer, se::Serializer};
 use cml_chain::{
     assets::{AssetName, Mint, NonZeroInt64},
     auxdata::{AuxiliaryData, ConwayFormatAuxData},
+    plutus::Redeemers,
     transaction::TransactionWitnessSet,
     LenEncoding, PolicyId, Script, StringEncoding,
 };
@@ -78,13 +79,15 @@ impl From<BabbageAuxiliaryData> for AuxiliaryData {
 impl From<BabbageTransactionWitnessSet> for TransactionWitnessSet {
     fn from(wits: BabbageTransactionWitnessSet) -> Self {
         let mut new_wits = TransactionWitnessSet::new();
-        new_wits.vkeywitnesses = wits.vkeywitnesses;
-        new_wits.native_scripts = wits.native_scripts;
-        new_wits.bootstrap_witnesses = wits.bootstrap_witnesses;
-        new_wits.redeemers = wits.redeemers;
-        new_wits.plutus_datums = wits.plutus_datums;
-        new_wits.plutus_v1_scripts = wits.plutus_v1_scripts;
-        new_wits.plutus_v2_scripts = wits.plutus_v2_scripts;
+        new_wits.vkeywitnesses = wits.vkeywitnesses.map(Into::into);
+        new_wits.native_scripts = wits.native_scripts.map(Into::into);
+        new_wits.bootstrap_witnesses = wits.bootstrap_witnesses.map(Into::into);
+        new_wits.redeemers = wits.redeemers.map(|rs| {
+            Redeemers::new_arr_legacy_redeemer(rs.into_iter().map(Into::into).collect::<Vec<_>>())
+        });
+        new_wits.plutus_datums = wits.plutus_datums.map(Into::into);
+        new_wits.plutus_v1_scripts = wits.plutus_v1_scripts.map(Into::into);
+        new_wits.plutus_v2_scripts = wits.plutus_v2_scripts.map(Into::into);
         new_wits
     }
 }

@@ -16,7 +16,7 @@ babbage_transaction_witness_set = {
   ? 2: [* bootstrap_witness ], ; @name bootstrap_witnesses
   ? 3: [* plutus_v1_script ],  ; @name plutus_v1_scripts
   ? 4: [* plutus_data ],       ; @name plutus_datums
-  ? 5: [* redeemer ],          ; @name redeemers
+  ? 5: [* alonzo_redeemer ],   ; @name redeemers
   ? 6: [* plutus_v2_script ],  ; @name plutus_v2_scripts
 }
 
@@ -75,10 +75,11 @@ babbage_update = [
 babbage_proposed_protocol_parameter_updates =
   { * genesis_hash => babbage_protocol_param_update }
 
-babbage_cost_models = {
-  ? 0 : [ 166*166 int ], ; @name plutus_v1
-  ? 1 : [ 175*175 int ], ; @name plutus_v2
-}
+;babbage_cost_models = {
+;  ? 0 : [ 166*166 int ], ; @name plutus_v1
+;  ? 1 : [ 175*175 int ], ; @name plutus_v2
+;}
+babbage_cost_models = cost_models
 
 babbage_protocol_param_update = {
   ? 0:  uint,                ; @name minfee_a
