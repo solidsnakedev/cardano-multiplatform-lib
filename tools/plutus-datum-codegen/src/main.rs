@@ -628,7 +628,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     prepend_import_raw_bytes_encoding(cli.output.join("rust").join("src"))?;
 
-    // generate utilty functions
+    // generate utility functions
     let export_utf8_utils = user_input_map
         .iter()
         .any(|(_path, file_str)| file_str.contains("utf8_text"));
@@ -690,18 +690,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .append(true)
         .open(cli.output.join("rust").join("Cargo.toml"))
         .unwrap();
-    rust_cargo.write_all("cml-core = \"5.3.1\"\n".as_bytes())?;
-    rust_cargo.write_all("cml-chain = \"5.3.1\"\n".as_bytes())?;
-    rust_cargo.write_all("cml-crypto = \"5.3.1\"\n".as_bytes())?;
+    rust_cargo.write_all("cml-core = \"6.0.0\"\n".as_bytes())?;
+    rust_cargo.write_all("cml-chain = \"6.0.0\"\n".as_bytes())?;
+    rust_cargo.write_all("cml-crypto = \"6.0.0\"\n".as_bytes())?;
     if cli.wasm {
         let mut wasm_cargo = std::fs::OpenOptions::new()
             .append(true)
             .open(cli.output.join("wasm").join("Cargo.toml"))
             .unwrap();
-        wasm_cargo.write_all("cml-core = \"5.3.1\"\n".as_bytes())?;
-        wasm_cargo.write_all("cml-core-wasm = \"5.3.1\"\n".as_bytes())?;
-        wasm_cargo.write_all("cml-chain = \"5.3.1\"\n".as_bytes())?;
-        wasm_cargo.write_all("cml-chain-wasm = \"5.3.1\"\n".as_bytes())?;
+        wasm_cargo.write_all("cml-core = \"6.0.0\"\n".as_bytes())?;
+        wasm_cargo.write_all("cml-core-wasm = \"6.0.0\"\n".as_bytes())?;
+        wasm_cargo.write_all("cml-chain = \"6.0.0\"\n".as_bytes())?;
+        wasm_cargo.write_all("cml-chain-wasm = \"6.0.0\"\n".as_bytes())?;
         // needed for cml-core's cbor/json macros
         wasm_cargo.write_all("hex = \"0.4.3\"\n".as_bytes())?;
     }
