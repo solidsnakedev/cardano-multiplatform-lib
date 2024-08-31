@@ -383,13 +383,13 @@ impl BigInteger {
         match *u32_digits {
             [] => Some(0),
             [a] => Some(u128::from(a)),
-            [a, b] => Some(u128::from(b) | (u128::from(a) << 32)),
-            [a, b, c] => Some(u128::from(c) | (u128::from(b) << 32) | (u128::from(a) << 64)),
+            [a, b] => Some(u128::from(a) | (u128::from(b) << 32)),
+            [a, b, c] => Some(u128::from(a) | (u128::from(b) << 32) | (u128::from(c) << 64)),
             [a, b, c, d] => Some(
-                u128::from(d)
-                    | (u128::from(c) << 32)
-                    | (u128::from(b) << 64)
-                    | (u128::from(a) << 96),
+                u128::from(a)
+                    | (u128::from(b) << 32)
+                    | (u128::from(c) << 64)
+                    | (u128::from(d) << 96),
             ),
             _ => None,
         }
@@ -1045,6 +1045,36 @@ mod tests {
         assert_eq!(x.as_u64(), Some(u64::MAX));
         assert_eq!(x.as_int().unwrap().to_string(), x.to_string());
         assert_eq!(x.to_string(), "18446744073709551615");
+    }
+
+    #[test]
+    fn bigint_uint_u128_roundtrip() {
+        let int = 462_164_030_739_157_517;
+        let x = BigInteger::from_int(&Int::Uint {
+            value: int,
+            encoding: None,
+        });
+        assert_eq!(x.as_u128(), Some(int as u128))
+    }
+
+    #[test]
+    fn bigint_uint_u128_roundtrip_min() {
+        let int = u64::MIN;
+        let x = BigInteger::from_int(&Int::Uint {
+            value: int,
+            encoding: None,
+        });
+        assert_eq!(x.as_u128(), Some(int as u128))
+    }
+
+    #[test]
+    fn bigint_uint_u128_roundtrip_max() {
+        let int = u64::MAX;
+        let x = BigInteger::from_int(&Int::Uint {
+            value: int,
+            encoding: None,
+        });
+        assert_eq!(x.as_u128(), Some(int as u128))
     }
 
     #[test]
