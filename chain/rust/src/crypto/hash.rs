@@ -40,13 +40,16 @@ pub fn hash_script_data(
     let mut buf = cbor_event::se::Serializer::new_vec();
     match datums {
         Some(datums) if redeemers.is_empty() => {
-            /*
+            /* (Deprecated)
             ; Finally, note that in the case that a transaction includes datums but does not
             ; include any redeemers, the script data format becomes (in hex):
             ; [ 80 | datums | A0 ]
             ; corresponding to a CBOR empty list and an empty map (our apologies).
             */
-            buf.write_raw_bytes(&[0x80]).unwrap();
+            /* Post Babbage:
+            ; [ A0 | datums | A0 ]
+            */
+            buf.write_raw_bytes(&[0xA0]).unwrap();
             datums.serialize(&mut buf, false).unwrap();
             buf.write_raw_bytes(&[0xA0]).unwrap();
         }
