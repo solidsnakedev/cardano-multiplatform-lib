@@ -172,7 +172,7 @@ pub fn parse_genesis_data<R: Read>(
             tau: fraction::Fraction::from_str(&data.protocolParams.tau).unwrap(),
         },
         security_param: data.securityParam,
-        slot_length: data.slotLength,
+        slot_length: fraction::Fraction::from_str(&data.slotLength).unwrap(),
         slots_per_kes_period: data.slotsPerKESPeriod,
         staking,
         system_start: data.systemStart.parse().expect("Failed to parse date"),
@@ -191,6 +191,10 @@ mod test {
 
     fn get_test_genesis_data() -> &'static str {
         include_str!("./test_data/test.json")
+    }
+
+    fn get_test_genesis_data_yaci() -> &'static str {
+        include_str!("./test_data/test-yaci.json")
     }
 
     #[test]
@@ -222,5 +226,10 @@ mod test {
                 .1,
             3000000000000000u64
         );
+    }
+
+    #[test]
+    fn parse_test_genesis_yaci_files() {
+        super::parse_genesis_data(get_test_genesis_data_yaci().as_bytes()).unwrap();
     }
 }
