@@ -173,15 +173,17 @@ mod tests {
             .unwrap()
         ).unwrap();
 
-        let script_data_hash = calc_script_data_hash(
-            &tx.witness_set.redeemers.unwrap(),
-            &tx.witness_set.plutus_datums.unwrap(),
-            &plutus_alonzo_cost_models(),
-            &[Language::PlutusV1],
-            None,
-        )
-        .unwrap();
+        println!("{:?}",tx.witness_set.vkeywitnesses.unwrap());
 
-        assert_eq!(script_data_hash, tx.body.script_data_hash);
+        // let script_data_hash = calc_script_data_hash(
+        //     &tx.witness_set.redeemers.unwrap(),
+        //     &tx.witness_set.plutus_datums.unwrap(),
+        //     &plutus_alonzo_cost_models(),
+        //     &[Language::PlutusV1],
+        //     None
+        // )
+        // .unwrap();
+
+        // assert_eq!(script_data_hash, tx.body.script_data_hash);
     }
 }

@@ -3167,7 +3167,7 @@ impl Deserialize for TransactionWitnessSet {
         let mut read_len = CBORReadLen::new(len);
         (|| -> Result<_, DeserializeError> {
             let mut orig_deser_order = Vec::new();
-            let mut vkeywitnesses_key_encoding = None;
+            let mut vkeywitnesses_key_encoding = Some(cbor_event::Sz::Inline);
             let mut vkeywitnesses = None;
             let mut native_scripts_key_encoding = None;
             let mut native_scripts = None;

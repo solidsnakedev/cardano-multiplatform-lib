@@ -677,10 +677,10 @@ impl SubCoin {
 // so you can NOT use it on any primitives so must be serializable directly
 #[derive(Debug, Clone)]
 pub struct NonemptySet<T> {
-    elems: Vec<T>,
-    len_encoding: LenEncoding,
+    pub elems: Vec<T>,
+    pub len_encoding: LenEncoding,
     // also controls whether to use the tag encoding (Some) or raw array (None)
-    tag_encoding: Option<Sz>,
+    pub tag_encoding: Option<Sz>,
 }
 
 impl<T: serde::Serialize> serde::Serialize for NonemptySet<T> {
@@ -700,7 +700,7 @@ impl<'de, T: serde::de::Deserialize<'de>> serde::de::Deserialize<'de> for Nonemp
         Vec::deserialize(deserializer).map(|elems| Self {
             elems,
             len_encoding: LenEncoding::default(),
-            tag_encoding: None,
+            tag_encoding: Some(Sz::Inline),
         })
     }
 }
@@ -769,7 +769,7 @@ impl<T> From<Vec<T>> for NonemptySet<T> {
         Self {
             elems,
             len_encoding: LenEncoding::default(),
-            tag_encoding: None,
+            tag_encoding: Some(Sz::Inline)
         }
     }
 }
@@ -787,7 +787,7 @@ impl<T: Serialize> Serialize for NonemptySet<T> {
         force_canonical: bool,
     ) -> cbor_event::Result<&'se mut Serializer<W>> {
         if let Some(tag_encoding) = &self.tag_encoding {
-            serializer.write_tag_sz(258, *tag_encoding)?;
+            serializer.write_tag(258)?;
         }
         serializer.write_array_sz(
             self.len_encoding

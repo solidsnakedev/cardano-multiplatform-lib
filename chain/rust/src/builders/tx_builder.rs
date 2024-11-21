@@ -2037,6 +2037,8 @@ mod tests {
     use std::collections::BTreeMap;
     use std::ops::Deref;
 
+    use cbor_event::Sz;
+    use cml_core::serialization::LenEncoding;
     use cml_core::Int;
     use cml_crypto::{
         Bip32PrivateKey, Bip32PublicKey, DatumHash, Deserialize, PrivateKey, RawBytesEncoding,
@@ -2057,7 +2059,7 @@ mod tests {
     use crate::genesis::network_info::{plutus_alonzo_cost_models, NetworkInfo};
     use crate::plutus::{PlutusScript, PlutusV1Script, PlutusV2Script, RedeemerTag};
     use crate::transaction::NativeScript;
-    use crate::{Script, SubCoin};
+    use crate::{NonemptySet, Script, SubCoin};
 
     use super::*;
     use crate::builders::output_builder::TransactionOutputBuilder;
@@ -4236,7 +4238,22 @@ mod tests {
 
         let mut witness_set = TransactionWitnessSet::new();
 
-        witness_set.vkeywitnesses = Some(
+        witness_set.vkeywitnesses = 
+        // Some(NonemptySet {
+        //     elems: vec![make_vkey_witness(
+        //         &hash_transaction(&body),
+        //         &PrivateKey::from_normal_bytes(
+        //             &hex::decode(
+        //                 "c660e50315d76a53d80732efda7630cae8885dfb85c46378684b3c6103e1284a",
+        //             )
+        //             .unwrap(),
+        //         )
+        //         .unwrap(),
+        //     )],
+        //     len_encoding: LenEncoding::default(),
+        //     tag_encoding: Some(Sz::Inline)
+        // });
+        Some(
             vec![make_vkey_witness(
                 &hash_transaction(&body),
                 &PrivateKey::from_normal_bytes(
@@ -4250,8 +4267,12 @@ mod tests {
             .into(),
         );
 
+        println!("{:?}",witness_set.to_cbor_bytes());
+        println!("{:?}",hex::encode(witness_set.to_cbor_bytes()));
+
         let final_tx = Transaction::new(body, witness_set, true, None);
         let deser_t = Transaction::from_cbor_bytes(&final_tx.to_cbor_bytes()).unwrap();
+        println!("{:?}",hex::encode(deser_t.to_cbor_bytes()));
         assert_eq!(deser_t.to_cbor_bytes(), final_tx.to_cbor_bytes());
         assert_eq!(
             deser_t.body.auxiliary_data_hash.unwrap(),

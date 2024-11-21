@@ -9,6 +9,7 @@ binaryen/
 
 target/
 
+.direnv/
 
 # New split architecture
 Cargo.lock
